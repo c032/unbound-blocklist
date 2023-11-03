@@ -1,0 +1,42 @@
+name: 'update'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '12 5 * * *'
+  push:
+    paths:
+      - 'user.conf'
+
+
+jobs:
+  update-merged-conf:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+        with:
+          ref: 'output'
+
+      - name: 'Get required files from `source`'
+        run: |
+          git fetch --depth 1 'origin' 'source'
+          git checkout 'origin/source' -- 'update.sh' 'user.conf'
+
+      - name: 'Create `merged.conf`'
+        run: |
+          sh 'update.sh'
+
+          rm -f 'user.conf' 'update.sh'
+          git rm --cached 'update.sh' 'user.conf'
+
+      - name: '`git config`'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "<>"
+
+      - name: 'Commit and push'
+        run: |
+          git add -v 'merged.conf'
+          git commit -m 'Update'
+          git push 'origin' 'output'
