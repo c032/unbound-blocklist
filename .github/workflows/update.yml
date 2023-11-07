@@ -38,5 +38,12 @@ jobs:
       - name: 'Commit and push'
         run: |
           git add -v 'merged.conf'
-          git commit -m 'Update'
-          git push 'origin' 'output'
+
+          git diff --cached --quiet
+
+          # Only commit and push if there are changes.
+          if [ "$?" -gt "0" ]
+          then
+            git commit -m 'Update'
+            git push 'origin' 'output'
+          fi
