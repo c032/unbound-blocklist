@@ -46,4 +46,6 @@ jobs:
           then
             git commit -m 'Update'
             git push 'origin' 'output'
+          else
+            exit 0
           fi
