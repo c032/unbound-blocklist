@@ -27,6 +27,7 @@ jobs:
         run: |
           sh 'update.sh'
 
+          # Cleanup.
           rm -f 'user.conf' 'update.sh'
           git rm --cached 'update.sh' 'user.conf'
 
@@ -37,15 +38,19 @@ jobs:
 
       - name: 'Commit and push'
         run: |
+          printf '%s\n' 'Adding `merged.conf`.'
           git add -v 'merged.conf'
 
+          printf '%s\n' 'Checking for changes.'
           git diff --cached --quiet
 
           # Only commit and push if there are changes.
           if [ "$?" -gt "0" ]
           then
+            printf '%s\n' 'Changes detected.'
             git commit -m 'Update'
             git push 'origin' 'output'
           else
+            printf '%s\n' 'Exiting gracefully.'
             exit 0
           fi
