@@ -14,7 +14,7 @@ mkdir -p ./downloads/
 curl -sSL --compressed 'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts' > ${FILE_STEVENBLACK_TXT}
 
 (
-	egrep '^0\.0\.0\.0 +[^" ]+$' "${FILE_STEVENBLACK_TXT}" \
+	grep -E '^0\.0\.0\.0 +[^" ]+$' "${FILE_STEVENBLACK_TXT}" \
 	| sed -r 's@^[^ ]+ (.+)$@local-zone: "\1" always_nxdomain@g'
 ) > ${FILE_STEVENBLACK_CONF}
 
